@@ -14,7 +14,7 @@ passport.use(
       try {
         // Find or create the user in your MongoDB database
         let user = await User.findOne({ googleId: profile.id });
-        console.log(profile);
+
         if (!user) {
           // User does not exist, create a new user
           user = new User({

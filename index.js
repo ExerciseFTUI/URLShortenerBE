@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const mainRoute = require("./routes/mainRoute");
 
 const cookieSession = require("cookie-session");
+const session = require("express-session");
 const passport = require("passport");
 const passportSetup = require("./passport");
 const authRoute = require("./routes/authRoute");
@@ -41,16 +42,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/", mainRoute);
 app.use("/auth", authRoute);
 
-app.get("/login/success", (req, res) => {
-  if (req.user) {
-    res.status(200).json({
-      success: true,
-      message: "successfull",
-      user: req.user,
-      //   cookies: req.cookies
-    });
-  }
-});
+// app.get("/login/success", (req, res) => {
+//   if (req.user) {
+//     res.status(200).json({
+//       success: true,
+//       message: "successfull",
+//       user: req.user,
+//       //   cookies: req.cookies
+//     });
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
