@@ -1,4 +1,5 @@
 const User = require("./models/userModel");
+const passport = require("passport");
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
@@ -13,7 +14,7 @@ passport.use(
       try {
         // Find or create the user in your MongoDB database
         let user = await User.findOne({ googleId: profile.id });
-
+        console.log(profile);
         if (!user) {
           // User does not exist, create a new user
           user = new User({
@@ -40,8 +41,11 @@ passport.serializeUser((user, done) => {
 });
 
 // Deserialize user from the session
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
 });

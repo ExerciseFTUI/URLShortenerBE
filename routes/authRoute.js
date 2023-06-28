@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 
 const CLIENT_URL = "http://localhost:5173";
 
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
 router.get(
   "/google/callback",
@@ -29,6 +33,11 @@ router.get("/login/failed", (req, res) => {
     success: false,
     message: "failure",
   });
+});
+
+router.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect(CLIENT_URL);
 });
 
 const authRoute = router;
