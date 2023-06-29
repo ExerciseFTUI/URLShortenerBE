@@ -18,7 +18,7 @@ const app = express();
 app.use(
   cookieSession({
     name: "session",
-    keys: ["secret"],
+    keys: [process.env.COOKIE_KEY],
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   })
 );
@@ -41,17 +41,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", mainRoute);
 app.use("/auth", authRoute);
-
-// app.get("/login/success", (req, res) => {
-//   if (req.user) {
-//     res.status(200).json({
-//       success: true,
-//       message: "successfull",
-//       user: req.user,
-//       //   cookies: req.cookies
-//     });
-//   }
-// });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
