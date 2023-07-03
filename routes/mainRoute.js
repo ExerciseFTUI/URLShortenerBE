@@ -9,8 +9,8 @@ const express = require("express");
 const { isAuthenticated } = require("../middlewares/authCheck");
 const router = express.Router();
 
-router.get("/", apiGetAll);
-router.get("/users", isAuthenticated, apiGetAllUser);
+router.get("/", apiGetAllUser);
+router.post("/url", apiGetAll);
 router.post("/create", apiPostShorten);
 router.put("/update", apiPutShorten);
 router.get("/:shortUrl", apiGetRedirect);
