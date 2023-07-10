@@ -2,16 +2,6 @@ const ShortUrl = require("../models/shortUrl");
 const User = require("../models/userModel");
 const { uploadHandler } = require("../utils/uploadHandler");
 
-//api to get all user
-const apiGetAllUser = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({ success: true, results: users });
-  } catch (err) {
-    res.status(400).json({ success: false, errors: err });
-  }
-};
-
 //api to get all short urls
 const apiGetAll = async (req, res) => {
   try {
