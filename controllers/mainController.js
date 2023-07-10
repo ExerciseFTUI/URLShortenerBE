@@ -1,5 +1,6 @@
 const ShortUrl = require("../models/shortUrl");
 const User = require("../models/userModel");
+const { uploadHandler } = require("../utils/uploadHandler");
 
 //api to get all short urls
 const apiGetAll = async (req, res) => {
@@ -57,10 +58,31 @@ const apiGetAllUser = async (req, res) => {
   }
 };
 
+//api to upload file
+const apiUploadFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      throw new Error("Tidak ada file yang diunggah.");
+    }
+
+    const url = await uploadHandler(req, "Testing", "");
+
+    //Response
+    res.status(200).json({
+      message: "Succefully Upload File",
+      error: false,
+      url: url,
+    });
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
 module.exports = {
   apiGetAll,
   apiPostShorten,
   apiGetRedirect,
   apiPutShorten,
   apiGetAllUser,
+  apiUploadFile,
 };
