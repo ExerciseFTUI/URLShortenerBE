@@ -4,6 +4,10 @@ const userSchema = new mongoose.Schema({
   googleId: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
+  universitas: { type: String, required: false },
+  fakultas: { type: String, required: false },
+  jurusan: { type: String, required: false },
+  angkatan: { type: String, required: false },
 });
 
 const User = mongoose.model("User", userSchema);

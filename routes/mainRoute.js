@@ -16,6 +16,9 @@ const router = express.Router();
 //Upload File
 router.post("/upload", upload.single("filename"), apiUploadFile);
 
+//Upload File
+router.post("/upload", upload.single("filename"), apiUploadFile);
+
 router.get("/", apiGetAll);
 router.get("/users", isAuthenticated, apiGetAllUser);
 router.post("/create", apiPostShorten);
