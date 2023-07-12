@@ -1,18 +1,8 @@
 const ShortUrl = require("../models/shortUrl");
 const User = require("../models/userModel");
+const { uploadHandler } = require("../utils/uploadHandler");
 
-
-//api to get all user
-const apiGetAllUser = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({ success: true, results: users });
-  } catch (err) {
-    res.status(400).json({ success: false, errors: err });
-  }
-};
-
-//api to get all short urls or short urls by user
+//api to get all short urls
 const apiGetAll = async (req, res) => {
   try {
     const { user_id } = req.body;
@@ -30,7 +20,7 @@ const apiGetAll = async (req, res) => {
 const apiPostShorten = async (req, res) => {
   try {
     let shortUrls;
-    if (req.body.short_url && req.body.short_url.trim() !== '') {
+    if (req.body.short_url && req.body.short_url.trim() !== "") {
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
         full: req.body.full_url,
@@ -43,7 +33,7 @@ const apiPostShorten = async (req, res) => {
       });
     }
     await shortUrls.save();
-    res.status(200).json({ success: true, results: shortUrls});
+    res.status(200).json({ success: true, results: shortUrls });
   } catch (err) {
     res.status(404).json({ success: false, errors: err });
   }
@@ -53,7 +43,7 @@ const apiPostShorten = async (req, res) => {
 const apiPutShorten = async (req, res) => {
   try {
     let shortUrls;
-    if (req.body.full_url && req.body.full_url.trim() !== '') {
+    if (req.body.full_url && req.body.full_url.trim() !== "") {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },
         { full: req.body.full_url, short: req.body.short_url }
@@ -64,7 +54,7 @@ const apiPutShorten = async (req, res) => {
         { short: req.body.short_url }
       );
     }
-    res.status(200).json({ success: true, results: "Successfully Updated!"});
+    res.status(200).json({ success: true, results: "Successfully Updated!" });
   } catch (err) {
     res.status(404).json({ success: false, errors: err });
   }
@@ -79,10 +69,41 @@ const apiGetRedirect = async (req, res) => {
   res.redirect(shortUrl.full);
 };
 
+//api to get all user
+const apiGetAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ success: true, users: users });
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+//api to upload file
+const apiUploadFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      throw new Error("Tidak ada file yang diunggah.");
+    }
+
+    const url = await uploadHandler(req, "Testing", "");
+
+    //Response
+    res.status(200).json({
+      message: "Succefully Upload File",
+      error: false,
+      url: url,
+    });
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
 module.exports = {
   apiGetAll,
   apiPostShorten,
   apiGetRedirect,
   apiPutShorten,
   apiGetAllUser,
+  apiUploadFile,
 };
