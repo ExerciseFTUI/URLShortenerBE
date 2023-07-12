@@ -26,7 +26,7 @@ const uploadHandler = async (req, folderName, fileName) => {
     // Upload file to Firebase Cloud Storage
     await uploadBytes(storageRef, req.file.buffer);
 
-    // Get Public URL
+    // Get Public URL and return it
     const publicUrl = await getDownloadURL(storageRef);
 
     return publicUrl;
