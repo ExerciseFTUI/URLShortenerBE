@@ -2,11 +2,21 @@ const ShortUrl = require("../models/shortUrl");
 const User = require("../models/userModel");
 const { uploadHandler } = require("../utils/uploadHandler");
 
-//api to get all short urls
+//api to get all user
+const apiGetAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ success: true, users: users });
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+//api to get all short urls by passing 0 else it will find by user id
 const apiGetAll = async (req, res) => {
   try {
-    const { user_id } = req.body;
-    const query = user_id ? { user_id } : {};
+    const user_id = req.params.id;
+    const query = user_id > 0 ? { user_id } : {};
 
     const shortUrls = await ShortUrl.find(query);
     const success = shortUrls.length > 0;
@@ -48,11 +58,13 @@ const apiPutShorten = async (req, res) => {
         { _id: req.body._id },
         { full: req.body.full_url, short: req.body.short_url }
       );
-    } else {
+    } else if (req.body.short_url && req.body.short_url.trim() !== "") {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },
         { short: req.body.short_url }
       );
+    }else{
+      throw new Error("Full URL or Short URL is required");
     }
     res.status(200).json({ success: true, results: "Successfully Updated!" });
   } catch (err) {
@@ -67,16 +79,6 @@ const apiGetRedirect = async (req, res) => {
   shortUrl.clicks++;
   shortUrl.save();
   res.redirect(shortUrl.full);
-};
-
-//api to get all user
-const apiGetAllUser = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({ success: true, users: users });
-  } catch (err) {
-    res.status(400).json(err);
-  }
 };
 
 //api to upload file

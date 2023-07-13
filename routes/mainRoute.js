@@ -19,10 +19,13 @@ router.post("/upload", upload.single("filename"), apiUploadFile);
 //Upload File
 router.post("/upload", upload.single("filename"), apiUploadFile);
 
-router.get("/", apiGetAll);
-router.get("/users", isAuthenticated, apiGetAllUser);
+router.get("/", apiGetAllUser);
+// router.get("/users", isAuthenticated, apiGetAllUser);
+router.get("/url/:id", apiGetAll);
 router.post("/create", apiPostShorten);
 router.put("/update", apiPutShorten);
+
+//api to redirect to the full url
 router.get("/:shortUrl", apiGetRedirect);
 
 module.exports = router;
