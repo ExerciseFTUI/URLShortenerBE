@@ -11,6 +11,7 @@ const session = require("express-session");
 const passport = require("passport");
 const passportSetup = require("./passport");
 const authRoute = require("./routes/authRoute");
+const qrcodeRoute = require("./routes/qrcodeRoute");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", mainRoute);
+app.use("/qr", qrcodeRoute);
 app.use("/auth", authRoute);
 
 app.listen(PORT, () => {
