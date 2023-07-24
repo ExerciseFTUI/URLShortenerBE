@@ -8,6 +8,7 @@ const qrSchema = new mongoose.Schema(
     qrLogo: { type: String },
     title: { type: String },
     customColor: { type: String },
+    scan: { type: Number },
   },
   { timestamps: true }
 );

@@ -1,4 +1,6 @@
 const Qr = require("../models/qrcodeModel");
+const User = require("../models/userModel");
+const { uploadHandler } = require("../utils/uploadHandler");
 
 //Route:
 // AddQR
@@ -6,36 +8,36 @@ const Qr = require("../models/qrcodeModel");
 // GetByUser
 // Delete
 
-const apiAddQr = async (req, res) => {
-  try {
-    // Get data from client
-    const { userId, url, qrLogo, title, customColor } = req.body;
+// const apiAddQr = async (req, res) => {
+//   try {
+//     // Get data from client
+//     const { userId, url, qrLogo, title, customColor } = req.body;
 
-    // Generate short URL
-    const shortUrl = await generateShortUrl();
+//     // Generate short URL
+//     const shortUrl = await generateShortUrl();
 
-    const newQrCode = new Qr({
-      userId,
-      url,
-      shortUrl,
-      qrLogo,
-      title,
-      customColor,
-    });
+//     const newQrCode = new Qr({
+//       userId,
+//       url,
+//       shortUrl,
+//       qrLogo,
+//       title,
+//       customColor,
+//     });
 
-    await newQrCode.save();
+//     await newQrCode.save();
 
-    res.status(200).json({
-      success: true,
-      payload: newQrCode,
-      message: "Successfully Add New QR",
-    });
-  } catch (error) {
-    res
-      .status(400)
-      .json({ success: false, message: "Failed to add Qr Code", error });
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       payload: newQrCode,
+//       message: "Successfully Add New QR",
+//     });
+//   } catch (error) {
+//     res
+//       .status(400)
+//       .json({ success: false, message: "Failed to add Qr Code", error });
+//   }
+// };
 
 //api to get all Qr
 const apiGetAllQr = async (req, res) => {
@@ -55,6 +57,24 @@ const apiGetQrByUserId = async (req, res) => {
     res.status(200).json({ success: true, payload: qrCodes });
   } catch (err) {
     res.status(400).json({ success: false, message: "Failed to get Qr code" });
+  }
+};
+
+//api to get a single Qr by its ID
+const apiGetQrById = async (req, res) => {
+  try {
+    const qrId = req.params.qrId;
+    const qrCode = await Qr.findById(qrId);
+
+    if (!qrCode) {
+      return res
+        .status(404)
+        .json({ success: false, message: "QR code not found" });
+    }
+
+    res.status(200).json({ success: true, payload: qrCode });
+  } catch (err) {
+    res.status(400).json({ success: false, message: "Failed to get QR code" });
   }
 };
 
@@ -89,9 +109,63 @@ const apiRedirect = async (req, res) => {
       return res.status(400).json({ success: false, message: "Url Not Found" });
     }
 
+    // Increment the 'scan' field
+    qrCode.scan = qrCode.scan + 1;
+
+    await qrCode.save();
+
     res.redirect(qrCode.url);
   } catch (error) {
     res.status(400).json({ success: false, message: "Failed to redirect" });
+  }
+};
+
+//api to upload file
+const apiAddQr = async (req, res) => {
+  try {
+    const { userId, url, title, customColor } = req.body;
+    let fileUrl;
+
+    //Get User information
+    const user = await User.findById(userId);
+
+    //Get Qr Code count for naming the file
+    const numberOfQrCodes = await Qr.countDocuments({
+      userId: userId,
+      qrLogo: { $exists: true },
+    });
+
+    //Check if file exists
+    if (req.file) {
+      fileUrl = await uploadHandler(
+        req,
+        user.name,
+        `Qr Image ${numberOfQrCodes + 1}`
+      );
+    }
+
+    // Generate short URL
+    const shortUrl = await generateShortUrl();
+
+    const newQrCode = new Qr({
+      userId,
+      url,
+      shortUrl,
+      qrLogo: fileUrl,
+      title,
+      customColor,
+    });
+
+    await newQrCode.save();
+
+    //Response
+    res.status(200).json({
+      success: true,
+      payload: newQrCode,
+      message: "Successfully Add New QR",
+    });
+  } catch (error) {
+    res.status(400).json(error);
   }
 };
 
@@ -117,6 +191,7 @@ const generateShortUrl = async () => {
 
 module.exports = {
   apiGetAllQr,
+  apiGetQrById,
   apiGetQrByUserId,
   apiAddQr,
   apiDeleteQrById,
