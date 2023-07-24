@@ -42,7 +42,7 @@ router.get("/login/failed", (req, res) => {
 
 router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect(CLIENT_URL);
+  res.redirect(`${CLIENT_URL}/login`);
 });
 
 const authRoute = router;

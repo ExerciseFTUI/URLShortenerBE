@@ -54,6 +54,13 @@ const apiGetQrByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
     const qrCodes = await Qr.find({ userId: userId });
+
+    if (!qrCodes) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User Not Found" });
+    }
+
     res.status(200).json({ success: true, payload: qrCodes });
   } catch (err) {
     res.status(400).json({ success: false, message: "Failed to get Qr code" });
@@ -126,8 +133,21 @@ const apiAddQr = async (req, res) => {
     const { userId, url, title, customColor } = req.body;
     let fileUrl;
 
+    //Check if 'url' exists and has a value
+    if (!url || url.trim() === "") {
+      return res
+        .status(400)
+        .json({ success: false, message: "URL is required" });
+    }
+
     //Get User information
     const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User Not Found" });
+    }
 
     //Get Qr Code count for naming the file
     const numberOfQrCodes = await Qr.countDocuments({
