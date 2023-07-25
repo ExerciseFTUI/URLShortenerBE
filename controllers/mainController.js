@@ -12,6 +12,40 @@ const apiGetAllUser = async (req, res) => {
   }
 };
 
+//api to update user data
+const apiUpdateUser = async (req, res) => {
+  const userId = req.params.userId;
+  const updatedData = req.body; // Assuming the request body contains the updated fields
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Update the user object with the new data
+    user.name = updatedData.name || user.name;
+    user.universitas = updatedData.universitas || user.universitas;
+    user.fakultas = updatedData.fakultas || user.fakultas;
+    user.jurusan = updatedData.jurusan || user.jurusan;
+    user.angkatan = updatedData.angkatan || user.angkatan;
+
+    // Save the updated user to the database
+    const updatedUser = await user.save();
+
+    res.status(200).json({ success: true, user: updatedUser });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to update user",
+      error: err.message,
+    });
+  }
+};
+
 //api to get all short urls by passing 0 else it will find by user id
 const apiGetAll = async (req, res) => {
   try {
@@ -63,7 +97,7 @@ const apiPutShorten = async (req, res) => {
         { _id: req.body._id },
         { short: req.body.short_url }
       );
-    }else{
+    } else {
       throw new Error("Full URL or Short URL is required");
     }
     res.status(200).json({ success: true, results: "Successfully Updated!" });
@@ -103,6 +137,7 @@ const apiUploadFile = async (req, res) => {
 
 module.exports = {
   apiGetAll,
+  apiUpdateUser,
   apiPostShorten,
   apiGetRedirect,
   apiPutShorten,
