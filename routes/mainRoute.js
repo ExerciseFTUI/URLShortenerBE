@@ -6,6 +6,7 @@ const {
   apiGetAllUser,
   apiUploadFile,
   apiUpdateUser,
+  apiDeleteShorten,
 } = require("../controllers/mainController");
 
 const upload = require("../config/multer");
@@ -25,6 +26,7 @@ router.get("/", apiGetAllUser);
 router.get("/url/:id", apiGetAll);
 router.post("/create", apiPostShorten);
 router.put("/update", apiPutShorten);
+router.delete("/delete/:id", apiDeleteShorten);
 
 //api to redirect to the full url
 router.get("/:shortUrl", apiGetRedirect);

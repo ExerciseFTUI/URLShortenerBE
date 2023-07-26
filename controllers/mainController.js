@@ -50,7 +50,7 @@ const apiUpdateUser = async (req, res) => {
 const apiGetAll = async (req, res) => {
   try {
     const user_id = req.params.id;
-    const query = user_id > 0 ? { user_id } : {};
+    const query = user_id != 0 ? { user_id } : {};
 
     const shortUrls = await ShortUrl.find(query);
     const success = shortUrls.length > 0;
@@ -106,6 +106,16 @@ const apiPutShorten = async (req, res) => {
   }
 };
 
+//api to delete a short url
+const apiDeleteShorten = async (req, res) => {
+  try {
+    await ShortUrl.deleteOne({ _id: req.params.id });
+    res.status(200).json({ success: true, results: "Successfully Deleted!" });
+  } catch (err) {
+    res.status(404).json({ success: false, errors: err });
+  }
+};
+
 //api to redirect to the full url
 const apiGetRedirect = async (req, res) => {
   const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
@@ -143,4 +153,5 @@ module.exports = {
   apiPutShorten,
   apiGetAllUser,
   apiUploadFile,
+  apiDeleteShorten,
 };
