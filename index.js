@@ -8,6 +8,7 @@ const mainRoute = require("./routes/mainRoute");
 
 const cookieSession = require("cookie-session");
 const session = require("express-session");
+const MemoryStore = require("memorystore")(session);
 const passport = require("passport");
 const passportSetup = require("./passport");
 const authRoute = require("./routes/authRoute");
@@ -20,30 +21,48 @@ const app = express();
 // Check if the app is running in production or development
 const isProduction = process.env.NODE_ENV === "production";
 
+console.log(isProduction);
+
 app.set("trust proxy", 1); // trust first proxy
 
-// Set secure property for production, but not for development
-if (isProduction) {
-  console.log("Production");
-  app.use(
-    cookieSession({
-      name: "session",
-      keys: [process.env.COOKIE_KEY],
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours,
-      secure: true,
-      sameSite: "none",
-    })
-  );
-} else {
-  // Cookie configuration
-  app.use(
-    cookieSession({
-      name: "session",
-      keys: [process.env.COOKIE_KEY],
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_KEY,
+    cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    })
-  );
-}
+      sameSite: isProduction ? "none" : "lax", // "lax" for non-production environments
+      secure: isProduction, // true for production, false for non-production environments
+    },
+    store: new MemoryStore({
+      checkPeriod: 86400000, // prune expired entries every 24h
+    }),
+  })
+);
+
+// Set secure property for production, but not for development
+// if (isProduction) {
+//   console.log("Production");
+//   app.use(
+//     cookieSession({
+//       name: "session",
+//       keys: [process.env.COOKIE_KEY],
+//       maxAge: 24 * 60 * 60 * 1000, // 24 hours,
+//       secure: true,
+//       sameSite: "none",
+//     })
+//   );
+// } else {
+//   // Cookie configuration
+//   app.use(
+//     cookieSession({
+//       name: "session",
+//       keys: [process.env.COOKIE_KEY],
+//       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+//     })
+//   );
+// }
 
 app.use(passport.initialize());
 app.use(passport.session());
