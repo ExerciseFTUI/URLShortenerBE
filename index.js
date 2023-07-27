@@ -20,8 +20,11 @@ const app = express();
 // Check if the app is running in production or development
 const isProduction = process.env.NODE_ENV === "production";
 
+app.set("trust proxy", 1); // trust first proxy
+
 // Set secure property for production, but not for development
 if (isProduction) {
+  console.log("Production");
   app.use(
     cookieSession({
       name: "session",
