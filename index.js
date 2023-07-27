@@ -17,13 +17,30 @@ const Qr = require("./models/qrcodeModel");
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-app.use(
-  cookieSession({
-    name: "session",
-    keys: [process.env.COOKIE_KEY],
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  })
-);
+// Check if the app is running in production or development
+const isProduction = process.env.NODE_ENV === "production";
+
+// Set secure property for production, but not for development
+if (isProduction) {
+  app.use(
+    cookieSession({
+      name: "session",
+      keys: [process.env.COOKIE_KEY],
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours,
+      secure: true,
+      sameSite: "none",
+    })
+  );
+} else {
+  // Cookie configuration
+  app.use(
+    cookieSession({
+      name: "session",
+      keys: [process.env.COOKIE_KEY],
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    })
+  );
+}
 
 app.use(passport.initialize());
 app.use(passport.session());

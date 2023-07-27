@@ -13,8 +13,8 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         // Find or create the user in your MongoDB database
+        console.log(profile);
         let user = await User.findOne({ googleId: profile.id });
-
         if (!user) {
           // User does not exist, create a new user
           user = new User({
