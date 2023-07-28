@@ -1,6 +1,6 @@
 const Qr = require("../models/qrcodeModel");
 const User = require("../models/userModel");
-const { uploadHandler } = require("../utils/uploadHandler");
+// const { uploadHandler } = require("../utils/uploadHandler");
 
 //Route:
 // AddQR
@@ -140,6 +140,11 @@ const apiAddQr = async (req, res) => {
         .json({ success: false, message: "URL is required" });
     }
 
+    //Check if 'url' is valid
+    if (!isValidUrl(url)) {
+      return res.status(400).json({ success: false, message: "Invalid Url" });
+    }
+
     //Get User information
     const user = await User.findById(userId);
 
@@ -156,13 +161,13 @@ const apiAddQr = async (req, res) => {
     });
 
     //Check if file exists
-    if (req.file) {
-      fileUrl = await uploadHandler(
-        req,
-        user.name,
-        `Qr Image ${numberOfQrCodes + 1}`
-      );
-    }
+    // if (req.file) {
+    //   fileUrl = await uploadHandler(
+    //     req,
+    //     user.name,
+    //     `Qr Image ${numberOfQrCodes + 1}`
+    //   );
+    // }
 
     // Generate short URL
     const shortUrl = await generateShortUrl();
@@ -176,7 +181,7 @@ const apiAddQr = async (req, res) => {
       customColor,
     });
 
-    await newQrCode.save();
+    // await newQrCode.save();
 
     //Response
     res.status(200).json({
@@ -208,6 +213,16 @@ const generateShortUrl = async () => {
 
   return shortUrl;
 };
+
+function isValidUrl(urlString) {
+  let url;
+  try {
+    url = new URL(urlString);
+  } catch (e) {
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
 
 module.exports = {
   apiGetAllQr,
