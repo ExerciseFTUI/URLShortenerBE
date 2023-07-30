@@ -106,6 +106,16 @@ const apiPutShorten = async (req, res) => {
   }
 };
 
+//api to lookup a short url
+const apiSearchShorten = async (req, res) => {
+  try {
+    const shortUrl = await ShortUrl.findOne({ _id: req.params.id });
+    res.status(200).json({ success: true, results: shortUrl });
+  } catch (err) {
+    res.status(404).json({ success: false, errors: err });
+  }
+};
+
 //api to delete a short url
 const apiDeleteShorten = async (req, res) => {
   try {
@@ -134,4 +144,5 @@ module.exports = {
   apiPutShorten,
   apiGetAllUser,
   apiDeleteShorten,
+  apiSearchShorten,
 };
