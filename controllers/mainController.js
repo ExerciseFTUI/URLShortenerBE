@@ -73,6 +73,7 @@ const apiPostShorten = async (req, res) => {
     } else {
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
+        title: "Title",
         full: req.body.full_url,
       });
     }
@@ -90,12 +91,12 @@ const apiPutShorten = async (req, res) => {
     if (req.body.full_url && req.body.full_url.trim() !== "" || req.body.title && req.body.title.trim() !== "") {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },
-        { full: req.body.full_url, short: req.body.short_url }
+        { full: req.body.full_url, short: req.body.short_url, title: req.body.title }
       );
-    } else if (req.body.short_url && req.body.short_url.trim() !== "") {
+    } else if (req.body.short_url && req.body.short_url.trim() !== ""|| req.body.title && req.body.title.trim() !== "") {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },
-        { short: req.body.short_url }
+        { short: req.body.short_url, title: req.body.title }
       );
     } else {
       throw new Error("Full URL or Short URL is required");
