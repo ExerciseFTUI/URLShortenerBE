@@ -6,6 +6,10 @@ const shortUrlSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  title: {
+    type: String,
+    required: false,
+  },
   full: {
     type: String,
     required: true,
