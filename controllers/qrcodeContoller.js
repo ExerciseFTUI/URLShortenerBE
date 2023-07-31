@@ -1,5 +1,6 @@
 const Qr = require("../models/qrcodeModel");
 const User = require("../models/userModel");
+const cloudinary = require("../config/cloudinary");
 // const { uploadHandler } = require("../utils/uploadHandler");
 
 //Route:
@@ -7,37 +8,6 @@ const User = require("../models/userModel");
 // GetAll
 // GetByUser
 // Delete
-
-// const apiAddQr = async (req, res) => {
-//   try {
-//     // Get data from client
-//     const { userId, url, qrLogo, title, customColor } = req.body;
-
-//     // Generate short URL
-//     const shortUrl = await generateShortUrl();
-
-//     const newQrCode = new Qr({
-//       userId,
-//       url,
-//       shortUrl,
-//       qrLogo,
-//       title,
-//       customColor,
-//     });
-
-//     await newQrCode.save();
-
-//     res.status(200).json({
-//       success: true,
-//       payload: newQrCode,
-//       message: "Successfully Add New QR",
-//     });
-//   } catch (error) {
-//     res
-//       .status(400)
-//       .json({ success: false, message: "Failed to add Qr Code", error });
-//   }
-// };
 
 //api to get all Qr
 const apiGetAllQr = async (req, res) => {
@@ -161,13 +131,21 @@ const apiAddQr = async (req, res) => {
     });
 
     //Check if file exists
-    // if (req.file) {
-    //   fileUrl = await uploadHandler(
-    //     req,
-    //     user.name,
-    //     `Qr Image ${numberOfQrCodes + 1}`
-    //   );
-    // }
+    if (req.file) {
+      // fileUrl = await uploadHandler(
+      //   req,
+      //   user.name,
+      //   `Qr Image ${numberOfQrCodes + 1}`
+      // );
+
+      //Uploading file to cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: `urlshortener/${user.name}`,
+        use_filename: true,
+      });
+
+      fileUrl = result.secure_url;
+    }
 
     // Generate short URL
     const shortUrl = await generateShortUrl();
@@ -181,7 +159,7 @@ const apiAddQr = async (req, res) => {
       customColor,
     });
 
-    // await newQrCode.save();
+    await newQrCode.save();
 
     //Response
     res.status(200).json({

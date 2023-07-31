@@ -15,14 +15,24 @@ passport.use(
         // Find or create the user in your MongoDB database
 
         let user = await User.findOne({ googleId: profile.id });
+
         if (!user) {
           // User does not exist, create a new user
           user = new User({
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails[0].value,
+            avatar: profile._json.picture,
           });
           await user.save();
+        }
+
+        if (!user.avatar) {
+          await User.findOneAndUpdate(
+            { _id: user._id },
+            { avatar: profile._json.picture },
+            { new: true }
+          );
         }
 
         // Call the `done` callback with the user object
