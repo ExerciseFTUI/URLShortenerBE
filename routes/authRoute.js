@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 
 const CLIENT_URL = process.env.CLIENT_URL;
+console.log(`Client URL: ${CLIENT_URL}`);
 
 router.get(
   "/google",
