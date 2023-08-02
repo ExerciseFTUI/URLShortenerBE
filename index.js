@@ -76,10 +76,11 @@ connectDB();
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
       "http://localhost:5000",
       "http://localhost:5173",
       "https://exe-url.vercel.app",
+      "https://app.exer.space",
+      "https://exer.space"
     ],
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
