@@ -25,7 +25,7 @@ const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 // const isProduction = NODE_ENV === "production";
 
-console.log(isProduction);
+// console.log(isProduction);
 
 app.set("trust proxy", 1); // trust first proxy
 
