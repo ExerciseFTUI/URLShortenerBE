@@ -132,11 +132,11 @@ const apiAddQr = async (req, res) => {
 
     //Check if file exists
     if (req.file) {
-      // fileUrl = await uploadHandler(
-      //   req,
-      //   user.name,
-      //   `Qr Image ${numberOfQrCodes + 1}`
-      // );
+      //Validating file size and type
+      const fileError = validateImageFile(req.file);
+      if (fileError) {
+        return res.status(400).json({ success: false, message: fileError });
+      }
 
       //Uploading file to cloudinary
       const result = await cloudinary.uploader.upload(req.file.path, {
@@ -144,6 +144,7 @@ const apiAddQr = async (req, res) => {
         use_filename: true,
       });
 
+      //Set fileUrl to image url
       fileUrl = result.secure_url;
     }
 
@@ -201,6 +202,18 @@ function isValidUrl(urlString) {
   }
   return url.protocol === "http:" || url.protocol === "https:";
 }
+
+const validateImageFile = (file) => {
+  if (!file.mimetype.startsWith("image/")) {
+    return "Only image files are allowed.";
+  }
+
+  if (file.size > 3 * 1024 * 1024) {
+    return "File size should be less than 3MB.";
+  }
+
+  return null; // No error
+};
 
 module.exports = {
   apiGetAllQr,
