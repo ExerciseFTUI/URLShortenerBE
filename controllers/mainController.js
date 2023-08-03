@@ -63,7 +63,10 @@ const apiGetAll = async (req, res) => {
 const apiPostShorten = async (req, res) => {
   try {
     let shortUrls;
-    if (req.body.short_url && req.body.short_url.trim() !== "" || req.body.title && req.body.title.trim() !== "") {
+    if (
+      (req.body.short_url && req.body.short_url.trim() !== "") ||
+      (req.body.title && req.body.title.trim() !== "")
+    ) {
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
         title: req.body.title,
@@ -87,20 +90,28 @@ const apiPostShorten = async (req, res) => {
 const apiPutShorten = async (req, res) => {
   try {
     let shortUrls;
-    if(req.body.full_url == "")
-    {
+    if (req.body.full_url == "") {
       throw new Error("Invalid full url");
     }
-    if(req.body.title == "")
-    {
+    if (req.body.title == "") {
       throw new Error("Invalid title");
     }
-    if (req.body.full_url && req.body.full_url.trim() !== "" || req.body.title && req.body.title.trim() !== "") {
+    if (
+      (req.body.full_url && req.body.full_url.trim() !== "") ||
+      (req.body.title && req.body.title.trim() !== "")
+    ) {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },
-        { full: req.body.full_url, short: req.body.short_url, title: req.body.title }
+        {
+          full: req.body.full_url,
+          short: req.body.short_url,
+          title: req.body.title,
+        }
       );
-    } else if (req.body.short_url && req.body.short_url.trim() !== ""|| req.body.title && req.body.title.trim() !== "") {
+    } else if (
+      (req.body.short_url && req.body.short_url.trim() !== "") ||
+      (req.body.title && req.body.title.trim() !== "")
+    ) {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },
         { short: req.body.short_url, title: req.body.title }
@@ -142,7 +153,6 @@ const apiGetRedirect = async (req, res) => {
   shortUrl.save();
   res.redirect(shortUrl.full);
 };
-
 
 module.exports = {
   apiGetAll,

@@ -24,8 +24,15 @@ router.get(
 );
 
 router.get("/login/success", (req, res) => {
-  console.log(req.user);
   if (req.user) {
+    req.session.user = req.user;
+    res.status(200).json({
+      success: true,
+      message: "successfull",
+      user: req.user,
+      //   cookies: req.cookies
+    });
+  } else if (req.session.user) {
     res.status(200).json({
       success: true,
       message: "successfull",
