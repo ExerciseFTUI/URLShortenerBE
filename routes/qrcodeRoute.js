@@ -12,13 +12,13 @@ const {
   apiGetQrById,
 } = require("../controllers/qrcodeContoller");
 
-router.get("/getAll", apiGetAllQr);
-router.get("/getSingleQr/:qrId", apiGetQrById);
-router.get("/getQrByUserId/:userId", apiGetQrByUserId);
+router.get("/getAll", isAuthenticated, apiGetAllQr);
+router.get("/getSingleQr/:qrId", isAuthenticated, apiGetQrById);
+router.get("/getQrByUserId/:userId", isAuthenticated, apiGetQrByUserId);
 router.get("/:shortUrl", apiRedirect);
-// router.post("/addQr", apiAddQr);
-router.post("/addQr", upload.single("filename"), apiAddQr);
-router.delete("/deleteQr/:qrId", apiDeleteQrById);
+
+router.post("/addQr", upload.single("filename"), isAuthenticated, apiAddQr);
+router.delete("/deleteQr/:qrId", isAuthenticated, apiDeleteQrById);
 
 const qrcodeRoute = router;
 module.exports = qrcodeRoute;

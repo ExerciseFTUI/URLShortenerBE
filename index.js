@@ -15,6 +15,7 @@ const passportSetup = require("./passport");
 const authRoute = require("./routes/authRoute");
 const qrcodeRoute = require("./routes/qrcodeRoute");
 const Qr = require("./models/qrcodeModel");
+const { isAuthenticated } = require("./middlewares/authCheck");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
