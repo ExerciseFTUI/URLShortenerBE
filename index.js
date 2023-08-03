@@ -30,19 +30,29 @@ const isProduction = process.env.NODE_ENV === "production";
 
 app.set("trust proxy", 1); //trust first proxy
 
+// app.use(
+//   session({
+//     resave: false,
+//     saveUninitialized: false,
+//     secret: process.env.COOKIE_KEY,
+//     cookie: {
+//       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+//       sameSite: isProduction ? "none" : "lax", // "lax" for non-production environments
+//       secure: isProduction, // true for production, false for non-production environments
+//     },
+//     store: new MemoryStore({
+//       checkPeriod: 86400000, // prune expired entries every 24h
+//     }),
+//   })
+// );
+
 app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.COOKIE_KEY,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: isProduction ? "none" : "lax", // "lax" for non-production environments
-      secure: isProduction, // true for production, false for non-production environments
-    },
-    store: new MemoryStore({
-      checkPeriod: 86400000, // prune expired entries every 24h
-    }),
+  cookieSession({
+    name: "session",
+    keys: [process.env.COOKIE_KEY], // Replace with your desired secret keys
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
   })
 );
 
