@@ -23,6 +23,7 @@ router.get(
 );
 
 router.get("/login/success", (req, res) => {
+  console.log(req._passport);
   if (req.user) {
     res.status(200).json({
       success: true,
@@ -51,7 +52,7 @@ router.get("/logout", (req, res) => {
     if (err) {
       console.error("Error destroying session:", err);
     }
-    res.clearCookie("connect.sid"); // Clear the session cookie
+    // res.clearCookie("connect.sid"); // Clear the session cookie
     // res.redirect(`${CLIENT_URL}/account/login`);
     res.status(200).json({ success: true, message: "Logout successfully" });
   });
