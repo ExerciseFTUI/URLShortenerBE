@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-const CLIENT_URL = process.env.CLIENT_URL;
+const CLIENT_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.CLIENT_URL
+    : "http://localhost:5173";
 console.log(`Client URL: ${CLIENT_URL}`);
 
 router.get(
