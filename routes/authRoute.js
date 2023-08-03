@@ -19,6 +19,7 @@ router.get(
     successRedirect: `${CLIENT_URL}`,
     // successRedirect: `http://localhost:5173`,
     failureRedirect: "/auth/login/failed",
+    session: true,
   })
 );
 
