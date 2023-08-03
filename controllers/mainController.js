@@ -73,7 +73,6 @@ const apiPostShorten = async (req, res) => {
     } else {
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
-        title: "Title",
         full: req.body.full_url,
       });
     }
@@ -88,6 +87,14 @@ const apiPostShorten = async (req, res) => {
 const apiPutShorten = async (req, res) => {
   try {
     let shortUrls;
+    if(req.body.full_url == "")
+    {
+      throw new Error("Invalid full url");
+    }
+    if(req.body.title == "")
+    {
+      throw new Error("Invalid title");
+    }
     if (req.body.full_url && req.body.full_url.trim() !== "" || req.body.title && req.body.title.trim() !== "") {
       shortUrls = await ShortUrl.findOneAndUpdate(
         { _id: req.body._id },

@@ -9,6 +9,7 @@ const shortUrlSchema = new mongoose.Schema({
   title: {
     type: String,
     required: false,
+    default: "Untitled",
   },
   full: {
     type: String,
