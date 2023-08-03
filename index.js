@@ -28,7 +28,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 // console.log(isProduction);
 
-// app.set("trust proxy", 1);  trust first proxy
+app.set("trust proxy", 1); //trust first proxy
 
 app.use(
   session({
