@@ -44,7 +44,14 @@ router.get("/login/failed", (req, res) => {
 
 router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect(`${CLIENT_URL}/login`);
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+    }
+    res.clearCookie("connect.sid"); // Clear the session cookie
+    // res.redirect(`${CLIENT_URL}/account/login`);
+    res.status(200).json({ success: true, message: "Logout successfully" });
+  });
 });
 
 const authRoute = router;

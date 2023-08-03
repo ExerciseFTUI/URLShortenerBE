@@ -102,7 +102,6 @@ const apiAddQr = async (req, res) => {
   try {
     const { userId, url, title, customColor } = req.body;
     let fileUrl;
-
     //Check if 'url' exists and has a value
     if (!url || url.trim() === "") {
       return res
