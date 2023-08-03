@@ -21,7 +21,11 @@ const router = express.Router();
 //Update User Data
 router.put("/updateUser/:userId", isAuthenticated, apiUpdateUser);
 
-router.get("/", isAuthenticated, apiGetAllUser);
+router.get("/", (req, res) => {
+  res.redirect(process.env.CLIENT_URL);
+});
+
+router.get("/getUser", isAuthenticated, apiGetAllUser);
 // router.get("/users", isAuthenticated, apiGetAllUser);
 router.get("/url/:id", isAuthenticated, apiGetAll);
 router.post("/create", isAuthenticated, apiPostShorten);
