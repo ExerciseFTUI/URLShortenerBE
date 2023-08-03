@@ -4,7 +4,7 @@ const isAuthenticated = (req, res, next) => {
     next();
   } else {
     // User is not authenticated, redirect to login page or display an error
-    res.status(401).json({ success: false, message: "Unauthorized" });
+    res.status(401).json({ success: false, message: req.session.user });
   }
 };
 
