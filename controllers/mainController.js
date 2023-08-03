@@ -83,7 +83,7 @@ const apiPostShorten = async (req, res) => {
   }
 };
 
-//api to update a short url
+//api to update a short urls
 const apiPutShorten = async (req, res) => {
   try {
     let shortUrls;
