@@ -19,15 +19,15 @@ const router = express.Router();
 // router.post("/upload", upload.single("filename"), apiUploadFile);
 
 //Update User Data
-router.put("/updateUser/:userId", apiUpdateUser);
+router.put("/updateUser/:userId", isAuthenticated, apiUpdateUser);
 
-router.get("/", apiGetAllUser);
+router.get("/", isAuthenticated, apiGetAllUser);
 // router.get("/users", isAuthenticated, apiGetAllUser);
-router.get("/url/:id", apiGetAll);
-router.post("/create", apiPostShorten);
-router.put("/update", apiPutShorten);
-router.get("/search/:id", apiSearchShorten);
-router.delete("/delete/:id", apiDeleteShorten);
+router.get("/url/:id", isAuthenticated, apiGetAll);
+router.post("/create", isAuthenticated, apiPostShorten);
+router.put("/update", isAuthenticated, apiPutShorten);
+router.get("/search/:id", isAuthenticated, apiSearchShorten);
+router.delete("/delete/:id", isAuthenticated, apiDeleteShorten);
 
 //api to redirect to the full url
 router.get("/:shortUrl", apiGetRedirect);
