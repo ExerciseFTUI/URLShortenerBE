@@ -36,13 +36,13 @@ router.get("/login/success", (req, res) => {
     res.status(200).json({
       success: true,
       message: "successfull",
-      user: req.user,
+      user: req.session.user,
       //   cookies: req.cookies
     });
   } else {
     res.status(401).json({
       success: false,
-      message: "failure",
+      message: req.session.user,
     });
   }
 });
