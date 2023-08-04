@@ -1,5 +1,5 @@
 const isAuthenticated = (req, res, next) => {
-  console.log(req.session);
+  console.log(req.sessionId);
   if (req.session.user || req.user) {
     // User is authenticated, proceed to the next middleware or route handler
     next();

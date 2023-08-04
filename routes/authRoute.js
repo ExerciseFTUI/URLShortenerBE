@@ -2,6 +2,7 @@ const MongoStore = require("connect-mongo");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const store = require("../config/mongoStore");
 
 const CLIENT_URL =
   process.env.NODE_ENV === "production"
@@ -25,6 +26,7 @@ router.get(
 
 router.get("/login/success", (req, res) => {
   if (req.session.user) {
+    console.log(req.sessionID);
     return res.status(200).json({
       success: true,
       message: "successfull",
@@ -61,6 +63,18 @@ router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroying session:", err);
+    }
+
+    if (req.session) {
+      store.destroy(req.sessionID, (err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+        } else {
+          res
+            .status(200)
+            .json({ success: true, message: "Logout successfully" });
+        }
+      });
     }
 
     res.status(200).json({ success: true, message: "Logout successfully" });
