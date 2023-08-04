@@ -1,3 +1,4 @@
+const MongoStore = require("connect-mongo");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
@@ -56,27 +57,28 @@ router.get("/login/failed", (req, res) => {
 
 router.get("/logout", (req, res) => {
   req.logout();
-  // req.session.destroy((err) => {
-  //   if (err) {
-  //     console.error("Error destroying session:", err);
-  //   }
+  console.log(req.sessionID);
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+    }
 
-  //   res.status(200).json({ success: true, message: "Logout successfully" });
-  // });
+    res.status(200).json({ success: true, message: "Logout successfully" });
+  });
 
   // If using connect-mongo, you can delete the session data from the database using its method
-  if (req.session) {
-    store.destroy(req.sessionID, (err) => {
-      if (err) {
-        console.error("Error destroying session:", err);
-      } else {
-        res.status(200).json({ success: true, message: "Logout successfully" });
-      }
-    });
-  } else {
-    // If req.session is not present, just respond with a successful logout message
-    res.status(200).json({ success: true, message: "Logout successfully" });
-  }
+  // if (req.session) {
+  //   MongoStore.destroy(req.sessionID, (err) => {
+  //     if (err) {
+  //       console.error("Error destroying session:", err);
+  //     } else {
+  //       res.status(200).json({ success: true, message: "Logout successfully" });
+  //     }
+  //   });
+  // } else {
+  //   // If req.session is not present, just respond with a successful logout message
+  //   res.status(200).json({ success: true, message: "Logout successfully" });
+  // }
 });
 
 const authRoute = router;
