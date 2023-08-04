@@ -24,23 +24,24 @@ router.get(
 );
 
 router.get("/login/success", (req, res) => {
-  if (req.user) {
-    req.session.user = req.user;
-    res.status(200).json({
-      success: true,
-      message: "successfull",
-      user: req.user,
-      //   cookies: req.cookies
-    });
-  } else if (req.session.user) {
-    res.status(200).json({
+  if (req.session.user) {
+    return res.status(200).json({
       success: true,
       message: "successfull",
       user: req.session.user,
       //   cookies: req.cookies
     });
+  }
+  if (req.user) {
+    req.session.user = req.user;
+    return res.status(200).json({
+      success: true,
+      message: "successfull",
+      user: req.user,
+      //   cookies: req.cookies
+    });
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: req.session.user,
     });
@@ -60,8 +61,7 @@ router.get("/logout", (req, res) => {
     if (err) {
       console.error("Error destroying session:", err);
     }
-    // res.clearCookie("connect.sid"); // Clear the session cookie
-    // res.redirect(`${CLIENT_URL}/account/login`);
+
     res.status(200).json({ success: true, message: "Logout successfully" });
   });
 });

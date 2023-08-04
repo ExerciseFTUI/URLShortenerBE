@@ -15,9 +15,8 @@ const passportSetup = require("./passport");
 const authRoute = require("./routes/authRoute");
 const qrcodeRoute = require("./routes/qrcodeRoute");
 const Qr = require("./models/qrcodeModel");
-const { isAuthenticated } = require("./middlewares/authCheck");
 
-let FileStore = require("session-file-store")(session);
+const MongoStore = require("connect-mongo");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -42,6 +41,7 @@ app.use(
       sameSite: isProduction ? "none" : "lax", // "lax" for non-production environments
       secure: isProduction, // true for production, false for non-production environments
     },
+    store: MongoStore.create({ mongoUrl: process.env.DATABASE_URI }),
   })
 );
 
