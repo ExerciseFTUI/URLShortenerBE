@@ -135,7 +135,7 @@ const apiSearchShorten = async (req, res) => {
   }
 };
 
-//api to delete a short url
+//api to delete a short urls
 const apiDeleteShorten = async (req, res) => {
   try {
     await ShortUrl.deleteOne({ _id: req.params.id });
