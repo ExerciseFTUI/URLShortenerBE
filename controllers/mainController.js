@@ -67,6 +67,14 @@ const apiPostShorten = async (req, res) => {
       (req.body.short_url && req.body.short_url.trim() !== "") ||
       (req.body.title && req.body.title.trim() !== "")
     ) {
+      if(req.body.short_url && req.body.short_url.trim() !== ""){
+        shortUrls = new ShortUrl({
+          user_id: req.body.user_id,
+          title: req.body.title,
+          full: req.body.full_url,
+        });
+        return
+      }
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
         title: req.body.title,
