@@ -24,7 +24,8 @@ const apiUpdateUser = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-
+    console.log("ini user asli");
+    console.log(user);
     // Update the user object with the new data
     user.name = updatedData.name || user.name;
     user.universitas = updatedData.universitas || user.universitas;
@@ -35,7 +36,8 @@ const apiUpdateUser = async (req, res) => {
     // Save the updated user to the database
     const updatedUser = await user.save();
 
-    console.log(updatedUser);
+    console.log("ini session");
+    console.log(req.session.user);
 
     res.status(200).json({ success: true, user: updatedUser });
   } catch (err) {
