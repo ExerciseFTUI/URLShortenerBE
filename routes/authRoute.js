@@ -1,4 +1,4 @@
-const MongoStore = require("connect-mongo");
+const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
@@ -28,8 +28,8 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/auth/login/failed" }),
   function (req, res) {
-    console.log(req.user.fakultas);
     if (!req.user.fakultas) {
+      // Successful authentication, redirect fill-data
       res.redirect(`${CLIENT_URL}/account/fill-data`);
     } else {
       // Successful authentication, redirect home.
@@ -60,10 +60,11 @@ router.get("/login/success", (req, res) => {
 
   // Check if there was req.session before
   // Check req.session.user and req.user if it different then reupdate req.session
+
   if (
     req.session.user &&
     req.session.user.googleId === req.user.googleId &&
-    req.session.user._id === req.user._id
+    req.session.user._id.toString() === req.user._id.toString()
   ) {
     console.log("User udah login sebelumnya");
 
