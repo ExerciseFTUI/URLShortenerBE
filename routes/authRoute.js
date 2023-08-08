@@ -1,4 +1,4 @@
-const MongoStore = require("connect-mongo");
+const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
@@ -15,33 +15,59 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+// router.get(
+//   "/google/callback",
+//   passport.authenticate("google", {
+//     successRedirect: `${CLIENT_URL}`,
+//     // successRedirect: `http://localhost:5173`,
+//     failureRedirect: "/auth/login/failed",
+//   })
+// );
+
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    successRedirect: `${CLIENT_URL}`,
-    // successRedirect: `http://localhost:5173`,
-    failureRedirect: "/auth/login/failed",
-  })
+  passport.authenticate("google", { failureRedirect: "/auth/login/failed" }),
+  function (req, res) {
+    if (!req.user.fakultas) {
+      // Successful authentication, redirect fill-data
+      res.redirect(`${CLIENT_URL}/account/fill-data`);
+    } else {
+      // Successful authentication, redirect home.
+      res.redirect(`${CLIENT_URL}`);
+    }
+  }
 );
 
 // router.get("/google/callback", (req, res, next) => {
 //   passport.authenticate("google", (err, user) => {
 //     console.log(`User: ${user}`);
 //     if (err) {
-//       return res.redirect("auth/login/failed"); // Redirect to login/failed on error
+//       res.redirect("auth/login/failed"); // Redirect to login/failed on error
 //     }
 
 //     //Check fakultas and jurusan field
 //     const condition = user.fakultas && user.jurusan;
-//     return res.redirect(
+//     res.redirect(
 //       condition ? `${CLIENT_URL}` : `${CLIENT_URL}/account/fill-data`
 //     );
 //   })(req, res, next);
 // });
 
 router.get("/login/success", (req, res) => {
-  if (req.session.user) {
-    console.log(req.sessionID);
+  console.log(req.sessionID);
+
+  // console.log(req.session.user.googleId === req.user.googleId);
+
+  // Check if there was req.session before
+  // Check req.session.user and req.user if it different then reupdate req.session
+
+  if (
+    req.session.user &&
+    req.session.user.googleId === req.user.googleId &&
+    req.session.user._id.toString() === req.user._id.toString()
+  ) {
+    console.log("User udah login sebelumnya");
+
     return res.status(200).json({
       success: true,
       message: "successfull",
@@ -50,7 +76,11 @@ router.get("/login/success", (req, res) => {
     });
   }
   if (req.user) {
+    console.log("User ganti akun");
+
+    //reupdate req.session
     req.session.user = req.user;
+
     return res.status(200).json({
       success: true,
       message: "successfull",
