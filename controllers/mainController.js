@@ -74,7 +74,6 @@ const apiPostShorten = async (req, res) => {
           title: req.body.title,
           full: req.body.full_url,
         });
-        return;
       }
 
       const existingShortUrl = await ShortUrl.findOne({
