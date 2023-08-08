@@ -35,6 +35,8 @@ passport.use(
           );
         }
 
+        console.log("User Yang Masuk : ", user);
+
         // Call the `done` callback with the user object
         done(null, user);
       } catch (error) {
