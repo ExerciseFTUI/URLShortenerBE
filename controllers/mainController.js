@@ -35,6 +35,8 @@ const apiUpdateUser = async (req, res) => {
     // Save the updated user to the database
     const updatedUser = await user.save();
 
+    console.log(updatedUser);
+
     res.status(200).json({ success: true, user: updatedUser });
   } catch (err) {
     res.status(400).json({
@@ -63,11 +65,12 @@ const apiGetAll = async (req, res) => {
 const apiPostShorten = async (req, res) => {
   try {
     let shortUrls;
+
     if (
       (req.body.short_url && req.body.short_url.trim() !== "") ||
       (req.body.title && req.body.title.trim() !== "")
     ) {
-      if(req.body.short_url.trim() === ""){
+      if (req.body.short_url.trim() === "") {
         shortUrls = new ShortUrl({
           user_id: req.body.user_id,
           title: req.body.title,
@@ -104,6 +107,19 @@ const apiPutShorten = async (req, res) => {
     if (req.body.title == "") {
       throw new Error("Invalid title");
     }
+
+    //Check if short url already exists in the database
+    if (req.body.short_url) {
+      const existingShortUrl = await ShortUrl.findOne({
+        short: req.body.short_url.trim(),
+      });
+      if (existingShortUrl) {
+        return res
+          .status(409)
+          .json({ success: false, error: "Short URL already exists" });
+      }
+    }
+
     if (
       (req.body.full_url && req.body.full_url.trim() !== "") ||
       (req.body.title && req.body.title.trim() !== "")
@@ -156,7 +172,7 @@ const apiDeleteShorten = async (req, res) => {
 //api to redirect to the full url
 const apiGetRedirect = async (req, res) => {
   const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
-  if (shortUrl == null) return res.sendStatus(404);
+  if (!shortUrl) return res.redirect(`${process.env.CLIENT_URL}/notfound`);
   shortUrl.clicks++;
   shortUrl.save();
   res.redirect(shortUrl.full);

@@ -24,6 +24,21 @@ router.get(
   })
 );
 
+// router.get("/google/callback", (req, res, next) => {
+//   passport.authenticate("google", (err, user) => {
+//     console.log(`User: ${user}`);
+//     if (err) {
+//       return res.redirect("auth/login/failed"); // Redirect to login/failed on error
+//     }
+
+//     //Check fakultas and jurusan field
+//     const condition = user.fakultas && user.jurusan;
+//     return res.redirect(
+//       condition ? `${CLIENT_URL}` : `${CLIENT_URL}/account/fill-data`
+//     );
+//   })(req, res, next);
+// });
+
 router.get("/login/success", (req, res) => {
   if (req.session.user) {
     console.log(req.sessionID);
