@@ -74,25 +74,14 @@ const apiPostShorten = async (req, res) => {
           title: req.body.title,
           full: req.body.full_url,
         });
-        return;
-      }
-
-      const existingShortUrl = await ShortUrl.findOne({
-        short: req.body.short_url.trim(),
-      });
-
-      if (existingShortUrl) {
-        return res
-          .status(409)
-          .json({ success: false, error: "Short URL already exists" });
-      }
-
+      }else{
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
         title: req.body.title,
         full: req.body.full_url,
         short: req.body.short_url,
       });
+      }
     } else {
       shortUrls = new ShortUrl({
         user_id: req.body.user_id,
@@ -181,7 +170,7 @@ const apiDeleteShorten = async (req, res) => {
 //api to redirect to the full url
 const apiGetRedirect = async (req, res) => {
   const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
-  if (!shortUrl) return res.redirect(`${process.env.CLIENT_URL}/notfound`);
+  if (!shortUrl) return res.redirect(`${process.env.CLIENT_URL}/not-found`);
   shortUrl.clicks++;
   shortUrl.save();
   res.redirect(shortUrl.full);
