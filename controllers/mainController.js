@@ -172,7 +172,7 @@ const apiDeleteShorten = async (req, res) => {
 //api to redirect to the full url
 const apiGetRedirect = async (req, res) => {
   const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
-  if (!shortUrl) return res.redirect(`${process.env.CLIENT_URL}/notfound`);
+  if (!shortUrl) return res.redirect(`${process.env.CLIENT_URL}/not-found`);
   shortUrl.clicks++;
   shortUrl.save();
   res.redirect(shortUrl.full);
