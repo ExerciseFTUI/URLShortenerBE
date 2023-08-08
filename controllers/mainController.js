@@ -35,6 +35,8 @@ const apiUpdateUser = async (req, res) => {
     // Save the updated user to the database
     const updatedUser = await user.save();
 
+    console.log(updatedUser);
+
     res.status(200).json({ success: true, user: updatedUser });
   } catch (err) {
     res.status(400).json({
@@ -63,6 +65,17 @@ const apiGetAll = async (req, res) => {
 const apiPostShorten = async (req, res) => {
   try {
     let shortUrls;
+     //Check if short url already exists in the database
+     if (req.body.short_url) {
+      const existingShortUrl = await ShortUrl.findOne({
+        short: req.body.short_url.trim(),
+      });
+      if (existingShortUrl) {
+        return res
+          .status(409)
+          .json({ success: false, error: "Short URL already exists" });
+      }
+    }
 
     if (
       (req.body.short_url && req.body.short_url.trim() !== "") ||

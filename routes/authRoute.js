@@ -88,7 +88,6 @@ router.get("/login/success", (req, res) => {
       //   cookies: req.cookies
     });
   } else {
-    console.log("gagal cuy");
     return res.status(401).json({
       success: false,
       message: req.session.user,
