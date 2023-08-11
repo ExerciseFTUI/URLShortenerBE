@@ -12,7 +12,7 @@ const {
   apiGetQrById,
 } = require("../controllers/qrcodeContoller");
 
-router.get("/getAll", isAuthenticated, apiGetAllQr);
+// router.get("/getAll", isAuthenticated, apiGetAllQr);
 router.get("/getSingleQr/:qrId", isAuthenticated, apiGetQrById);
 router.get("/getQrByUserId/:userId", isAuthenticated, apiGetQrByUserId);
 router.get("/:shortUrl", apiRedirect);

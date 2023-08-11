@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
   res.redirect(process.env.CLIENT_URL);
 });
 
-router.get("/getUser", isAuthenticated, apiGetAllUser);
+// router.get("/getUser", isAuthenticated, apiGetAllUser);
 // router.get("/users", isAuthenticated, apiGetAllUser);
 router.get("/url/:id", isAuthenticated, apiGetAll);
 router.post("/create", isAuthenticated, apiPostShorten);
