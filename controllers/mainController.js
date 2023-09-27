@@ -111,55 +111,45 @@ const apiPostShorten = async (req, res) => {
 //api to update a short urls
 const apiPutShorten = async (req, res) => {
   try {
-    let shortUrls;
-    if (req.body.full_url == "") {
-      throw new Error("Invalid full url");
+    if (!req.body.full_url) {
+      return res.status(400).json({ success: false, error: "Full URL is required" });
     }
-    if (req.body.title == "") {
-      throw new Error("Invalid title");
+  
+    if (!req.body.title) {
+      return res.status(400).json({ success: false, error: "Title is required" });
     }
-
-    //Check if short url already exists in the database
+  
     if (req.body.short_url) {
-      const existingShortUrl = await ShortUrl.findOne({
-        short: req.body.short_url.trim(),
-      });
-
-      //If they are not the same URL then send error response
-      if (existingShortUrl._id.toString() !== req.body._id.toString()) {
-        return res
-          .status(409)
-          .json({ success: false, error: "Short URL already exists" });
+      const existingShortUrl = await ShortUrl.findOne({ short: req.body.short_url.trim() });
+  
+      if (existingShortUrl && existingShortUrl._id.toString() !== req.body._id.toString()) {
+        return res.status(409).json({ success: false, error: "Short URL already exists" });
       }
     }
-
-    if (
-      (req.body.full_url && req.body.full_url.trim() !== "") ||
-      (req.body.title && req.body.title.trim() !== "")
-    ) {
-      shortUrls = await ShortUrl.findOneAndUpdate(
-        { _id: req.body._id },
-        {
-          full: req.body.full_url,
-          short: req.body.short_url,
-          title: req.body.title,
-        }
-      );
-    } else if (
-      (req.body.short_url && req.body.short_url.trim() !== "") ||
-      (req.body.title && req.body.title.trim() !== "")
-    ) {
-      shortUrls = await ShortUrl.findOneAndUpdate(
-        { _id: req.body._id },
-        { short: req.body.short_url, title: req.body.title }
-      );
-    } else {
-      throw new Error("Full URL or Short URL is required");
+  
+    const updateFields = {
+      full: req.body.full_url,
+      title: req.body.title,
+    };
+  
+    if (req.body.short_url) {
+      updateFields.short = req.body.short_url;
     }
-    res.status(200).json({ success: true, results: "Successfully Updated!" });
-  } catch (err) {
-    res.status(404).json({ success: false, errors: err });
-  }
+  
+    const updatedShortUrl = await ShortUrl.findOneAndUpdate(
+      { _id: req.body._id },
+      updateFields,
+      { new: true } // This option ensures you get the updated document
+    );
+  
+    if (!updatedShortUrl) {
+      return res.status(404).json({ success: false, error: "Short URL not found" });
+    }
+  
+    return res.status(200).json({ success: true, results: "Successfully Updated the Short URL!" });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }  
 };
 
 //api to lookup a short url
