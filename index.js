@@ -86,11 +86,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://exe-url.vercel.app",
-      "https://app.exer.space",
-    ],
+    origin: process.env.CORS_ALLOWED_ORIGINS.split(', '),
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
